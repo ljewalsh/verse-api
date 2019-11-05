@@ -17,8 +17,8 @@ def create():
   to_account_id = data.get('to_account_id')
   amount = data.get('amount')
 
-  from_account = AccountModel.get_one_account(from_account_id)
-  to_account = AccountModel.get_one_account(to_account_id)
+  from_account = AccountModel.get_account_for_balance_update(from_account_id)
+  to_account = AccountModel.get_account_for_balance_update(to_account_id)
 
   if from_account is None:
       message = 'Account with id ' + str(from_account_id) + ' does not exist'
