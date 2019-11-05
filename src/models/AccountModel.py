@@ -43,7 +43,6 @@ class AccountModel(db.Model):
 
     @staticmethod
     def get_one_account(id):
-        print(id)
         return AccountModel.query.get(id)
 
     def get_account_by_account_number(account_number):
