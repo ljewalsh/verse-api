@@ -7,6 +7,7 @@ verify_ssl = true
 flask-script = "*"
 flask-migrate = "*"
 pytest-flask = "*"
+pytest = "*"
 
 [packages]
 flask = "*"

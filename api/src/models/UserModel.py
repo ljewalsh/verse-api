@@ -23,6 +23,9 @@ class UserModel(db.Model):
         self.created_at = datetime.datetime.utcnow()
         self.modified_at = datetime.datetime.utcnow()
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
     def save(self):
         db.session.add(self)
         db.session.commit()

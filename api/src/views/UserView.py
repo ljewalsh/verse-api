@@ -12,9 +12,6 @@ def create():
   req_data = request.get_json()
   data = user_schema.load(req_data)
 
-  # if error:
-  #   return custom_response(error, 400)
-
   user_in_db = UserModel.get_user_by_email(data.get('email'))
 
   if user_in_db:
@@ -26,6 +23,18 @@ def create():
 
   ser_data = user_schema.dump(user)
   return custom_response({'user': ser_data}, 201)
+
+@user_api.route('/<int:user_id>', methods=['GET'])
+def get_a_user(user_id):
+  """
+  Get a single user
+  """
+  user = UserModel.get_one_user(user_id)
+  if not user:
+    return custom_response({'error': 'user not found'}, 404)
+
+  ser_user = user_schema.dump(user)
+  return custom_response(ser_user, 200)
 
 
 def custom_response(res, status_code):
