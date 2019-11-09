@@ -22,9 +22,5 @@ def create_app(env_name):
   app.register_blueprint(account_blueprint, url_prefix='/api/v1/accounts')
   app.register_blueprint(transaction_blueprint, url_prefix='/api/v1/transactions')
 
-  @app.route('/', methods=['GET'])
-  def index():
-    return 'Hello'
-
   return app
 
