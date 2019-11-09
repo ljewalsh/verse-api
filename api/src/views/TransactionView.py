@@ -38,7 +38,6 @@ def create():
   from_account.update({ 'balance': from_account.balance - amount })
   to_account.update({ 'balance': to_account.balance + amount })
 
-
   message = 'Successfully transferred ' + str(amount) + ' from ' + from_account.account_number + ' to ' + to_account.account_number
   return custom_response({'transaction': message}, 201)
 

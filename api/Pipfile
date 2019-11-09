@@ -15,6 +15,7 @@ flask-sqlalchemy = "*"
 flask-bcrypt = "*"
 marshmallow = "*"
 psycopg2-binary = "*"
+asyncio = "*"
 
 [requires]
 python_version = "3.8"

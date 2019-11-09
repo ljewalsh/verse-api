@@ -47,7 +47,7 @@ class AccountModel(db.Model):
 
     @staticmethod
     def get_account_for_balance_update(id):
-        return db.session.query(AccountModel).with_for_update().filter_by(id=id).first()
+        return AccountModel.query.filter_by(id=id).with_for_update().populate_existing().first()
 
     def get_account_by_account_number(account_number):
         return AccountModel.query.filter(AccountModel.account_number == account_number).first()
