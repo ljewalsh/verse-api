@@ -1,3 +1,4 @@
+import threading
 from flask import request, json, Response, Blueprint
 from ..models.TransactionModel import TransactionModel, TransactionSchema
 from ..models.AccountModel import AccountModel, AccountSchema
@@ -28,8 +29,12 @@ def create():
       message = 'Account with id ' + str(to_account_id) + ' does not exist'
       return custom_response(message, 400)
 
+  from_account.lock = threading.Lock()
+  from_account.lock.acquire()
+
   if from_account.balance < amount:
       message = 'Account with number ' + from_account.account_number + ' does not have enough money to make this transaction'
+      from_account.lock.release()
       return custom_response(message, 400)
 
   transaction = TransactionModel(data)
@@ -38,6 +43,7 @@ def create():
   from_account.update({ 'balance': from_account.balance - amount })
   to_account.update({ 'balance': to_account.balance + amount })
 
+  from_account.lock.release()
   message = 'Successfully transferred ' + str(amount) + ' from ' + from_account.account_number + ' to ' + to_account.account_number
   return custom_response({'transaction': message}, 201)
 

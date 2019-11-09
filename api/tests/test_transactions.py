@@ -76,6 +76,7 @@ def test_create_transaction_locking(test_context):
             "from_account_id": from_account.id,
             "amount": 20
             }
+
     with ThreadPoolExecutor(2) as pool:
         first = pool.submit(make_post_request, (test_client), (transaction_details))
         second = pool.submit(make_post_request, (test_client), (transaction_details))
@@ -86,7 +87,7 @@ def test_create_transaction_locking(test_context):
         print(updated_from_account.balance)
         print(updated_to_account.balance)
 
-        print (first.result().get_json())
-        print (second.result().get_json())
+        print (first.result())
+        print (second.result())
 
 

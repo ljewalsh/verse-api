@@ -8,6 +8,7 @@ flask-script = "*"
 flask-migrate = "*"
 pytest-flask = "*"
 pytest = "*"
+threading = "*"
 
 [packages]
 flask = "*"
@@ -15,7 +16,6 @@ flask-sqlalchemy = "*"
 flask-bcrypt = "*"
 marshmallow = "*"
 psycopg2-binary = "*"
-asyncio = "*"
 
 [requires]
 python_version = "3.8"
