@@ -1,10 +1,12 @@
 from flask import request, json, Response, Blueprint
 from ..models.AccountModel import AccountModel, AccountSchema
+from ..shared.Authentication import Auth
 
 account_api = Blueprint('accounts', __name__)
 account_schema = AccountSchema()
 
 @account_api.route('/', methods=['POST'])
+@Auth.auth_required
 def create_account():
     req_data = request.get_json()
     data = account_schema.load(req_data)
@@ -21,6 +23,7 @@ def create_account():
     return custom_response(ser_data, 201)
 
 @account_api.route('/<int:account_id>', methods=['GET'])
+@Auth.auth_required
 def get_a_account(account_id):
     account = AccountModel.get_one_account(account_id)
     if not account:

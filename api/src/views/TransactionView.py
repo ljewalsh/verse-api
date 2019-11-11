@@ -2,11 +2,13 @@ import threading
 from flask import request, json, Response, Blueprint
 from ..models.TransactionModel import TransactionModel, TransactionSchema
 from ..models.AccountModel import AccountModel, AccountSchema
+from ..shared.Authentication import Auth
 
 transaction_api = Blueprint('transactions', __name__)
 transaction_schema = TransactionSchema()
 
 @transaction_api.route('/', methods=['POST'])
+@Auth.auth_required
 def create_transaction():
     req_data = request.get_json()
     data = transaction_schema.load(req_data)
@@ -37,7 +39,6 @@ def create_transaction():
     transaction = TransactionModel(data)
     transaction.save()
 
-    print ("I'm about to update the balance")
     from_account.update({ 'balance': from_account.balance - amount })
     to_account.update({ 'balance': to_account.balance + amount })
 
