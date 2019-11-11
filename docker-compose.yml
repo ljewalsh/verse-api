@@ -1,6 +1,10 @@
-version: '3'
+version: '3.6'
 services:
   api:
     build: .
+    environment:
+        - FLASK_ENV=${FLASK_ENV}
+        - DATABASE_URL=${DATABASE_URL}
+        - JWT_SECRET_KEY=${JWT_SECRET_KEY}
     ports:
       - "5000:5000"
