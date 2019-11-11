@@ -81,13 +81,16 @@ def test_create_transaction_locking(test_context):
         first = pool.submit(make_post_request, (test_client), (transaction_details))
         second = pool.submit(make_post_request, (test_client), (transaction_details))
 
-        updated_from_account = AccountModel.get_one_account(from_account.id)
-        updated_to_account = AccountModel.get_one_account(to_account.id)
+        assert first.result().status_code == 201
+        assert second.result().status_code == 403
 
-        print(updated_from_account.balance)
-        print(updated_to_account.balance)
+    db.session.expire(from_account)
+    db.session.expire(to_account)
 
-        print (first.result())
-        print (second.result())
+    updated_from_account = AccountModel.get_one_account(from_account.id)
+    updated_to_account = AccountModel.get_one_account(to_account.id)
+
+    assert updated_from_account.balance == 0
+    assert updated_to_account.balance == 20
 
 
