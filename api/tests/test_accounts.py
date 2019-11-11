@@ -19,7 +19,7 @@ def test_create_account(test_context):
     assert res.status_code == 201
 
 
-def test_get_account(test_context):
+def test_get_account_success(test_context):
     test_client, dummy_user = test_context
 
     account = AccountModel({
@@ -39,3 +39,13 @@ def test_get_account(test_context):
     assert res_json['user_id'] == account.user_id
     assert res_json['balance'] == account.balance
     assert res_json['account_number'] == account.account_number
+
+def test_get_account_failure(test_context):
+    test_client, dummy_user = test_context
+
+    route = '/api/v1/accounts/1000'
+    res = test_client.get(route)
+    res_json = res.get_json()
+
+    assert res.status_code == 404
+    assert res.get_json == { "error": "Account with id 1000 does not exist" }

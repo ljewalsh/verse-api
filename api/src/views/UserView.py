@@ -24,7 +24,7 @@ def create_user():
 def get_a_user(user_id):
   user = UserModel.get_one_user(user_id)
   if not user:
-    return custom_response({'error': 'User not found'}, 404)
+    return custom_response({'error': 'User with id {} does not exist'.format(str(user_id)) }, 404)
 
   ser_data = user_schema.dump(user)
   return custom_response(ser_data, 200)
