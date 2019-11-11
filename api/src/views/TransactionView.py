@@ -24,7 +24,7 @@ def create_transaction():
     except sqlalchemy.orm.exc.NoResultFound:
         return custom_response({ "error": "Account with id {} does not exist".format(str(from_account_id)) }, 403)
     except InsufficientFunds:
-        return custom_response({ "error": "Account with id {} does not have enough money to complete this transaction".format(str(from_account_id)) }, 403)
+        return custom_response({ "error": str(InsufficientFunds) }, 403)
 
     transaction = TransactionModel(data)
     transaction.save()

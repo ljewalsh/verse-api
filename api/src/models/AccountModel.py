@@ -43,7 +43,7 @@ class AccountModel(db.Model):
     def remove_money_from_account(id, amount):
         account = AccountModel.query.filter_by(id=id).with_for_update().one()
         if (account.balance < amount):
-            raise InsufficientFunds("Don't have enough money")
+            raise InsufficientFunds("Account with id {} does not have enough money to complete this transaction".format(str(id)))
 
         account.balance -= amount
         account.modified_at = datetime.datetime.utcnow()

@@ -87,7 +87,7 @@ def test_get_account_balance_during_transaction(test_context):
         second = pool.submit(test_client.get, '/api/v1/accounts/{}'.format(str(account.id)))
 
         requested_account = second.result().get_json()
-        assert requested_account.balance == 0
+        assert requested_account["balance"] == 0
 
 def test_get_account_failure(test_context):
     test_client, dummy_user = test_context
