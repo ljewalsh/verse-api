@@ -12,7 +12,7 @@ def test_create_user(test_context):
 
     res = test_client.post('/api/v1/users/', data=json.dumps(new_user), content_type='application/json')
 
-    created_user = UserModel.get_user_by_email("test@email.com")
+    created_user = UserModel.get_user_by_email("create_user@email.com")
 
     assert created_user is not None
     assert res.status_code == 201

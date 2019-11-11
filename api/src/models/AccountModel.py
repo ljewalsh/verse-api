@@ -1,8 +1,9 @@
 import threading
 import datetime
 from marshmallow import fields, Schema
-from .TransactionModel import TransactionSchema
 from . import db
+from .TransactionModel import TransactionSchema
+from ..shared.exceptions import InsufficientFunds
 
 class AccountModel(db.Model):
     __tablename__ = 'accounts'
@@ -38,6 +39,21 @@ class AccountModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def remove_money_from_account(id, amount):
+        account = AccountModel.query.filter_by(id=id).with_for_update().one()
+        if (account.balance < amount):
+            raise InsufficientFunds("Don't have enough money")
+
+        account.balance -= amount
+        account.modified_at = datetime.datetime.utcnow()
+        db.session.commit()
+
+    def add_money_to_account(id, amount):
+        account = AccountModel.query.filter_by(id=id).with_for_update().one()
+        account.balance += amount
+        account.modified_at = datetime.datetime.utcnow()
+        db.session.commit()
+
     @staticmethod
     def get_all_accounts():
         return AccountModel.query.all()
@@ -47,13 +63,8 @@ class AccountModel(db.Model):
         return AccountModel.query.get(id)
 
     @staticmethod
-    def get_account_for_balance_update(id):
-        account = AccountModel.query.filter_by(id=id).with_for_update().one()
-        return account
-
-    @staticmethod
     def get_account_by_account_number(account_number):
-        return AccountModel.query.filter(AccountModel.account_number == account_number).one()
+        return AccountModel.query.filter(AccountModel.account_number == account_number).first()
 
     def __repr(self):
         return '<id {}>'.format(self.id)
