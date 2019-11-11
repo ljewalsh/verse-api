@@ -48,7 +48,8 @@ class AccountModel(db.Model):
 
     @staticmethod
     def get_account_for_balance_update(id):
-        return AccountModel.query.filter_by(id=id).with_for_update().one()
+        account = AccountModel.query.filter_by(id=id).with_for_update().one()
+        return account
 
     @staticmethod
     def get_account_by_account_number(account_number):
