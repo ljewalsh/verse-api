@@ -2,13 +2,13 @@ import json
 from src.models import db
 from src.models.AccountModel import AccountModel
 
-def test_create_account(test_context):
+def test_create_account_success(test_context):
     test_client, dummy_user = test_context
 
     new_account = {
             "user_id": dummy_user.id,
             "balance": 5,
-            "account_number": "test_account_number"
+            "account_number": "test_create_account_success"
             }
 
     res = test_client.post('/api/v1/accounts/', data=json.dumps(new_account), content_type='application/json')
@@ -18,6 +18,22 @@ def test_create_account(test_context):
     assert created_account is not None
     assert res.status_code == 201
 
+def test_create_account_failure(test_context):
+    test_client, dummy_user = test_context
+
+    account_details = {
+            "user_id": dummy_user.id,
+            "balance": 5,
+            "account_number": "test_create_account_failure"
+            }
+
+    account = AccountModel(account_details)
+    account.save()
+
+    res = test_client.post('/api/v1/accounts/', data=json.dumps(account_details), content_type='application/json')
+
+    assert res.status_code == 403
+    assert res.get_json() == { "error": "Account with account_number {} already exist for user_id {}, please supply another account number".format(account.account_number, str(dummy_user.id)) }
 
 def test_get_account_success(test_context):
     test_client, dummy_user = test_context
@@ -48,4 +64,4 @@ def test_get_account_failure(test_context):
     res_json = res.get_json()
 
     assert res.status_code == 404
-    assert res.get_json == { "error": "Account with id 1000 does not exist" }
+    assert res.get_json() == { "error": "Account with id 1000 does not exist" }

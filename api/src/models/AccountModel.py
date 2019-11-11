@@ -1,6 +1,7 @@
 import threading
 import datetime
 from marshmallow import fields, Schema
+from sqlalchemy import Index
 from . import db
 from .TransactionModel import TransactionSchema
 from ..shared.exceptions import InsufficientFunds
@@ -63,11 +64,13 @@ class AccountModel(db.Model):
         return AccountModel.query.get(id)
 
     @staticmethod
-    def get_account_by_account_number(account_number):
-        return AccountModel.query.filter(AccountModel.account_number == account_number).first()
+    def get_account_by_account_number(user_id, account_number):
+        return AccountModel.query.filter(AccountModel.account_number == account_number, AccountModel.user_id == user_id).first()
 
     def __repr(self):
         return '<id {}>'.format(self.id)
+
+Index('unique_account_number_for_user', AccountModel.account_number, AccountModel.user_id, unique=True)
 
 class AccountSchema(Schema):
   id = fields.Int(dump_only=True)

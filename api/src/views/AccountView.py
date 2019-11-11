@@ -8,11 +8,13 @@ account_schema = AccountSchema()
 def create_account():
     req_data = request.get_json()
     data = account_schema.load(req_data)
+    account_number = data.get('account_number')
+    user_id = data.get('user_id')
 
-    account_in_db = AccountModel.get_account_by_account_number(data.get('account_number'))
+    account_in_db = AccountModel.get_account_by_account_number(user_id, account_number)
     if account_in_db:
-        message = {'error': 'Account already exist, please supply another account number'}
-        return custom_response(message, 400)
+        message = {'error': 'Account with account_number {} already exist for user_id {}, please supply another account number'.format(account_number, str(user_id))}
+        return custom_response(message, 403)
 
     account = AccountModel(data)
     account.save()
@@ -24,7 +26,7 @@ def create_account():
 def get_a_account(account_id):
     account = AccountModel.get_one_account(account_id)
     if not account:
-        return custom_response({'error': 'Account not found'}, 404)
+        return custom_response({'error': 'Account with id {} does not exist'.format(str(account_id)) }, 404)
 
     ser_data  = account_schema.dump(account)
     return custom_response(ser_data, 200)
