@@ -1,13 +1,9 @@
-import json
 from concurrent.futures import ThreadPoolExecutor
 from src.models import db
 from src.models.UserModel import UserModel
 from src.models.AccountModel import AccountModel
 from src.models.TransactionModel import TransactionModel
-
-def make_post_request(test_client, transaction_details):
-    res = test_client.post('/api/v1/transactions/', data=json.dumps(transaction_details), content_type='application/json')
-    return res
+from tests.shared_methods import make_post_request
 
 def test_create_transaction(test_context):
     test_client, dummy_user = test_context
@@ -39,7 +35,7 @@ def test_create_transaction(test_context):
             "amount": 20
             }
 
-    res = make_post_request(test_client, transaction_details)
+    res = make_post_request('/api/v1/transactions/', test_client, transaction_details)
     assert res.status_code == 201
 
     updated_from_account = AccountModel.get_one_account(from_account.id)
@@ -78,9 +74,11 @@ def test_create_transaction_balance_conflict(test_context):
             "amount": 20
             }
 
+    path = '/api/v1/transactions/'
+
     with ThreadPoolExecutor(2) as pool:
-        first = pool.submit(make_post_request, (test_client), (transaction_details))
-        second = pool.submit(make_post_request, (test_client), (transaction_details))
+        first = pool.submit(make_post_request, (path), (test_client), (transaction_details))
+        second = pool.submit(make_post_request, (path), (test_client), (transaction_details))
 
         assert first.result().status_code == 201
         assert second.result().status_code == 403
@@ -127,9 +125,11 @@ def test_create_transaction_balance_update(test_context):
             "amount": 20
             }
 
+    path = '/api/v1/transactions/'
+
     with ThreadPoolExecutor(2) as pool:
-        first = pool.submit(make_post_request, (test_client), (transaction_details))
-        second = pool.submit(make_post_request, (test_client), (transaction_details))
+        first = pool.submit(make_post_request, (path), (test_client), (transaction_details))
+        second = pool.submit(make_post_request, (path), (test_client), (transaction_details))
 
         assert first.result().status_code == 201
         assert second.result().status_code == 201

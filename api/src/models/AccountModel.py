@@ -61,7 +61,7 @@ class AccountModel(db.Model):
 
     @staticmethod
     def get_one_account(id):
-        return AccountModel.query.get(id)
+        return AccountModel.query.filter(AccountModel.id == id).with_for_update().first()
 
     @staticmethod
     def get_account_by_account_number(user_id, account_number):
