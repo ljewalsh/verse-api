@@ -1,6 +1,7 @@
 import json
 from src.models import db
 from src.models.UserModel import UserModel
+from tests.shared_methods import make_post_request
 
 def test_create_user(test_context):
     test_client, dummy_user = test_context
@@ -10,7 +11,7 @@ def test_create_user(test_context):
             "password": "test_password"
             }
 
-    res = test_client.post('/api/v1/users/', data=json.dumps(new_user), content_type='application/json')
+    res = make_post_request('/api/v1/users/', test_client, new_user)
 
     created_user = UserModel.get_user_by_email("create_user@email.com")
 
