@@ -43,7 +43,7 @@ class UserModel(db.Model):
         db.session.commit()
 
     def __generate_hash(self, password):
-        return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")
+        return bcrypt.generate_password_hash(password, rounds=10).decode('utf-8')
 
     @staticmethod
     def check_hash(self, password):

@@ -6,9 +6,9 @@ from src.shared.Authentication import Auth
 
 @pytest.fixture()
 def test_context():
-    """
+    '''
     Test Configuration
-    """
+    '''
     app = create_app('testing')
     test_client = app.test_client()
 
@@ -16,9 +16,9 @@ def test_context():
         db.create_all()
 
         dummy_user = UserModel({
-            "username": "test_user",
-            "email": "test@email.com",
-            "password": "test_password"
+            'username': 'test_user',
+            'email': 'test@email.com',
+            'password': 'test_password'
         })
         dummy_user.save()
 

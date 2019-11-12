@@ -17,10 +17,10 @@ class Auth():
         payload,
         os.getenv('JWT_SECRET_KEY'),
         'HS256'
-      ).decode("utf-8")
+      ).decode('utf-8')
     except Exception as e:
         return Response(
-        mimetype="application/json",
+        mimetype='application/json',
         response=json.dumps({'error': 'error in generating user token'}),
         status=400
       )
@@ -45,7 +45,7 @@ class Auth():
     def decorated_auth(*args, **kwargs):
       if 'api-token' not in request.headers:
         return Response(
-          mimetype="application/json",
+          mimetype='application/json',
           response=json.dumps({'error': 'Authentication token is not available, please login to get one'}),
           status=400
         )
@@ -53,7 +53,7 @@ class Auth():
       data = Auth.decode_token(token)
       if data['error']:
         return Response(
-          mimetype="application/json",
+          mimetype='application/json',
           response=json.dumps(data['error']),
           status=400
         )
@@ -62,8 +62,8 @@ class Auth():
       check_user = UserModel.get_one_user(user_id)
       if not check_user:
         return Response(
-          mimetype="application/json",
-          response=json.dumps({'error': 'user does not exist, invalid token'}),
+          mimetype='application/json',
+          response=json.dumps({'error': 'User with id {} does not exist, invalid token'.format(str(user_id))}),
           status=400
         )
       g.user = {'id': user_id}

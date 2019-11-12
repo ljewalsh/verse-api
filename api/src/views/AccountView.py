@@ -37,7 +37,7 @@ def get_a_account(account_id):
 
 def custom_response(res, status_code):
     return Response(
-            mimetype="application/json",
+            mimetype='application/json',
             response=json.dumps(res),
             status=status_code
             )

@@ -24,9 +24,9 @@ def create_transaction():
         AccountModel.add_money_to_account(to_account_id, amount)
 
     except sqlalchemy.orm.exc.NoResultFound:
-        return custom_response({ "error": "Account with id {} does not exist".format(str(from_account_id)) }, 403)
+        return custom_response({ 'error': 'Account with id {} does not exist'.format(str(from_account_id)) }, 403)
     except InsufficientFunds:
-        return custom_response({ "error": str(InsufficientFunds) }, 403)
+        return custom_response({ 'error': str(InsufficientFunds) }, 403)
 
     transaction = TransactionModel(data)
     transaction.save()
@@ -37,7 +37,7 @@ def create_transaction():
 
 def custom_response(res, status_code):
   return Response(
-    mimetype="application/json",
+    mimetype='application/json',
     response=json.dumps(res),
     status=status_code
   )

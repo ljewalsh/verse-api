@@ -1,9 +1,9 @@
 import os
 
 class Development(object):
-    """
+    '''
     Development environment configuration
-    """
+    '''
     DEBUG = True
     TESTING = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -11,9 +11,9 @@ class Development(object):
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 
 class Production(object):
-    """
+    '''
     Production environment configurations
-    """
+    '''
     DEBUG = False
     TESTING = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -24,7 +24,7 @@ class Testing(object):
     DEBUG = True
     TESTING = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = "postgres://verse_developer:iamaversedeveloper@localhost:5432/verse_testing"
+    SQLALCHEMY_DATABASE_URI = 'postgres://verse_developer:iamaversedeveloper@localhost:5432/verse_testing'
 
 app_config = {
     'development': Development,
