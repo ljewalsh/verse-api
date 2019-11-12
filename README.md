@@ -19,7 +19,7 @@ docker-compile exec api pipenv run pytest
 ```
 
 ## Authentication
-All requests but the user create request require a jwt-token in the header. The jwt-token is available in two responses:
+All requests (except user create and login requests) require a jwt-token in the header. The jwt-token is available in two responses:
 
 1. On user create (`/api/v1/users/`)
 2. On user login (`/api/v1/users/login`)
