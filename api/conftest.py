@@ -9,7 +9,7 @@ def test_context():
     Test Configuration
     """
     app = create_app('testing')
-    testing_client = app.test_client()
+    test_client = app.test_client()
 
     with app.app_context():
         db.create_all()
@@ -21,7 +21,7 @@ def test_context():
         })
         dummy_user.save()
 
-        yield testing_client, dummy_user
+        yield test_client, dummy_user
 
         db.session.close()
         db.drop_all()

@@ -17,6 +17,7 @@ flask-bcrypt = "*"
 marshmallow = "*"
 psycopg2-binary = "*"
 sqlalchemy = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.8"
