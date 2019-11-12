@@ -1,12 +1,11 @@
 import jwt
 import os
 import datetime
-from flask import json
 from functools import wraps
+from flask import json, Response, request, g
 from ..models.UserModel import UserModel
 
 class Auth():
-  @staticmethod
   def generate_token(user_id):
     try:
       payload = {
@@ -20,7 +19,7 @@ class Auth():
         'HS256'
       ).decode("utf-8")
     except Exception as e:
-      return Response(
+        return Response(
         mimetype="application/json",
         response=json.dumps({'error': 'error in generating user token'}),
         status=400
@@ -30,7 +29,7 @@ class Auth():
   def decode_token(token):
     re = {'data': {}, 'error': {}}
     try:
-      payload = jwt.decode(token, os.getenv('JWT_SECRET_KEY'))
+      payload = jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=['HS256'])
       re['data'] = {'user_id': payload['sub']}
       return re
     except jwt.ExpiredSignatureError as e1:

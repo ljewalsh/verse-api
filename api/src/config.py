@@ -21,8 +21,8 @@ class Production(object):
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 
 class Testing(object):
-    DEBUG: True
-    TESTING: True
+    DEBUG = True
+    TESTING = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = "postgres://verse_developer:iamaversedeveloper@localhost:5432/verse_testing"
 

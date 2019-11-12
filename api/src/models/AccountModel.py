@@ -1,8 +1,10 @@
 import threading
 import datetime
 from marshmallow import fields, Schema
-from .TransactionModel import TransactionSchema
+from sqlalchemy import Index
 from . import db
+from .TransactionModel import TransactionSchema
+from ..shared.Exceptions import InsufficientFunds
 
 class AccountModel(db.Model):
     __tablename__ = 'accounts'
@@ -38,25 +40,37 @@ class AccountModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def remove_money_from_account(id, amount):
+        account = AccountModel.query.filter_by(id=id).with_for_update().one()
+        if (account.balance < amount):
+            raise InsufficientFunds("Account with id {} does not have enough money to complete this transaction".format(str(id)))
+
+        account.balance -= amount
+        account.modified_at = datetime.datetime.utcnow()
+        db.session.commit()
+
+    def add_money_to_account(id, amount):
+        account = AccountModel.query.filter_by(id=id).with_for_update().one()
+        account.balance += amount
+        account.modified_at = datetime.datetime.utcnow()
+        db.session.commit()
+
     @staticmethod
     def get_all_accounts():
         return AccountModel.query.all()
 
     @staticmethod
     def get_one_account(id):
-        return AccountModel.query.get(id)
+        return AccountModel.query.filter(AccountModel.id == id).with_for_update().first()
 
     @staticmethod
-    def get_account_for_balance_update(id):
-        account = AccountModel.query.filter_by(id=id).with_for_update().one()
-        return account
-
-    @staticmethod
-    def get_account_by_account_number(account_number):
-        return AccountModel.query.filter(AccountModel.account_number == account_number).one()
+    def get_account_by_account_number(user_id, account_number):
+        return AccountModel.query.filter(AccountModel.account_number == account_number, AccountModel.user_id == user_id).first()
 
     def __repr(self):
         return '<id {}>'.format(self.id)
+
+Index('unique_account_number_for_user', AccountModel.account_number, AccountModel.user_id, unique=True)
 
 class AccountSchema(Schema):
   id = fields.Int(dump_only=True)

@@ -19,48 +19,44 @@ def create_user():
   user.save()
 
   ser_data = user_schema.dump(user)
-  return custom_response(ser_data, 201)
+  token = Auth.generate_token(ser_data['id'])
 
-@user_api.route('/<int:user_id>', methods=['GET'])
-@Auth.auth_required
-def get_a_user(user_id):
-  user = UserModel.get_one_user(user_id)
-  if not user:
-    return custom_response({'error': 'User not found'}, 404)
+  return custom_response({ 'jwt_token': json.dumps(token) }, 201)
 
-  ser_data = user_schema.dump(user)
-  return custom_response(ser_data, 200)
 
 @user_api.route('/login', methods=['POST'])
 def login():
   req_data = request.get_json()
+  email = data.get('email')
+  password = data.get('password')
 
-  data, error = user_schema.load(req_data, partial=True)
+  if not email or not password:
+    return custom_response({'error': 'An email and password is required to sign in'}, 400)
 
-  if error:
-    return custom_response(error, 400)
-
-  if not data.get('email') or not data.get('password'):
-    return custom_response({'error': 'you need email and password to sign in'}, 400)
-
-  user = UserModel.get_user_by_email(data.get('email'))
+  user = UserModel.get_user_by_email(email)
 
   if not user:
-    return custom_response({'error': 'invalid credentials'}, 400)
+    return custom_response({'error': 'Invalid credentials'}, 400)
 
-  if not user.check_hash(data.get('password')):
-    return custom_response({'error': 'invalid credentials'}, 400)
+  if not user.check_hash(password):
+    return custom_response({'error': 'Invalid credentials'}, 400)
 
-  ser_data = user_schema.dump(user).data
+  token = Auth.generate_token(user.id)
+  return custom_response({'jwt_token': token }, 200)
 
-  token = Auth.generate_token(ser_data.get('id'))
+@user_api.route('/<int:user_id>', methods=['GET'])
+@Auth.auth_required
+def get_a_user(user_id):
+    user = UserModel.get_one_user(user_id)
+    if not user:
+        return custom_response({'error': 'User with id {} does not exist'.format(str(user_id)) }, 404)
 
-  return custom_response({'jwt_token': token}, 200)
-
+    ser_data = user_schema.dump(user)
+    return custom_response(ser_data, 200)
 
 def custom_response(res, status_code):
   return Response(
-    mimetype="application/json",
+    mimetype='application/json',
     response=json.dumps(res),
     status=status_code
   )

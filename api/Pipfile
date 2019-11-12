@@ -17,7 +17,8 @@ flask-bcrypt = "*"
 marshmallow = "*"
 psycopg2-binary = "*"
 sqlalchemy = "*"
-jwt = "*"
+pytest = "*"
+pyjwt = "*"
 
 [requires]
 python_version = "3.8"
