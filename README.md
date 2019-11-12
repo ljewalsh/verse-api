@@ -15,14 +15,14 @@ export JWT_SECRET_KEY={your_secret_key}
 ## Running Tests
 Once the server is running, run tests in another terminal using:
 ```
-docker-compile exec api pipenv run pytestl
+docker-compile exec api pipenv run pytest
 ```
 
 ## Authentication
-Most requests require a jwt-token in the header. The jwt-token is available in two responses:
+All requests but the user create request require a jwt-token in the header. The jwt-token is available in two responses:
 
-1. On user create (/api/v1/users/)
-2. On user login (/api/v1/users/login)
+1. On user create (`/api/v1/users/`)
+2. On user login (`/api/v1/users/login`)
 
 Header should be formatted as follows:
 ```
