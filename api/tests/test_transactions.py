@@ -5,34 +5,34 @@ from src.models.AccountModel import AccountModel
 from src.models.TransactionModel import TransactionModel
 from tests.shared_methods import make_post_request
 
-def test_create_transaction(test_context):
+def test_create_transaction_success(test_context):
     test_client, dummy_user, token = test_context
 
-    to_account  = AccountModel({
+    from_account  = AccountModel({
             "user_id": dummy_user.id,
-            "balance": 0,
+            "balance": 20,
             "account_number": "to_account",
             })
-    to_account.save()
+    from_account.save()
 
-    from_user = UserModel({
+    to_user = UserModel({
             "username": "from_account",
             "email": "from@account.com",
             "password": "test_password"
             })
-    from_user.save()
+    to_user.save()
 
-    from_account = AccountModel({
-            "user_id": from_user.id,
-            "balance": 20,
+    to_account = AccountModel({
+            "user_id": to_user.id,
+            "balance": 0,
             "account_number": "from_account"
             })
-    from_account.save()
+    to_account.save()
 
     transaction_details = {
             "to_account_id": to_account.id,
             "from_account_id": from_account.id,
-            "amount": 20
+            "amount": 20,
             }
 
     res = make_post_request('/api/v1/transactions/', test_client, transaction_details, token)
@@ -44,34 +44,73 @@ def test_create_transaction(test_context):
     assert updated_from_account.balance == 0
     assert updated_to_account.balance == 20
 
-def test_create_transaction_balance_conflict(test_context):
+def test_create_transaction_permission_error(test_context):
     test_client, dummy_user, token = test_context
 
-    to_account  = AccountModel({
+    user_with_permissions = UserModel({
+        "email": "user@with_permissions.com",
+        "password": "fakepassword",
+        "username": "user_with_permissions"
+        })
+    user_with_permissions.save()
+
+    from_account  = AccountModel({
+            "user_id": user_with_permissions.id,
+            "balance": 20,
+            "account_number": "to_account",
+            })
+    from_account.save()
+
+    to_account = AccountModel({
             "user_id": dummy_user.id,
             "balance": 0,
-            "account_number": "to_account_locking",
+            "account_number": "from_account"
             })
     to_account.save()
 
-    from_user = UserModel({
+    transaction_details = {
+            "to_account_id": dummy_user.id,
+            "from_account_id": from_account.id,
+            "amount": 20,
+            }
+
+    res = make_post_request('/api/v1/transactions/', test_client, transaction_details, token)
+    assert res.status_code == 403
+
+    updated_from_account = AccountModel.get_one_account(from_account.id)
+    updated_to_account = AccountModel.get_one_account(to_account.id)
+
+    assert updated_from_account.balance == 20
+    assert updated_to_account.balance == 0
+
+def test_create_transaction_balance_conflict(test_context):
+    test_client, dummy_user, token = test_context
+
+    from_account  = AccountModel({
+            "user_id": dummy_user.id,
+            "balance": 20,
+            "account_number": "to_account_locking",
+            })
+    from_account.save()
+
+    to_user = UserModel({
             "username": "from_account_locking",
             "email": "from@account_locking.com",
             "password": "test_password"
             })
-    from_user.save()
+    to_user.save()
 
-    from_account = AccountModel({
-            "user_id": from_user.id,
-            "balance": 20,
+    to_account = AccountModel({
+            "user_id": to_user.id,
+            "balance": 0,
             "account_number": "from_account_locking"
             })
-    from_account.save()
+    to_account.save()
 
     transaction_details = {
             "to_account_id": to_account.id,
             "from_account_id": from_account.id,
-            "amount": 20
+            "amount": 20,
             }
 
     path = '/api/v1/transactions/'
@@ -98,31 +137,31 @@ def test_create_transaction_balance_conflict(test_context):
 def test_create_transaction_balance_update(test_context):
     test_client, dummy_user, token = test_context
 
-    to_account  = AccountModel({
+    from_account  = AccountModel({
             "user_id": dummy_user.id,
-            "balance": 0,
-            "account_number": "to_account_locking",
-            })
-    to_account.save()
-
-    from_user = UserModel({
-            "username": "from_account_locking",
-            "email": "from@account_locking.com",
-            "password": "test_password"
-            })
-    from_user.save()
-
-    from_account = AccountModel({
-            "user_id": from_user.id,
             "balance": 40,
-            "account_number": "from_account_locking"
+            "account_number": "from_account_locking",
             })
     from_account.save()
+
+    to_user = UserModel({
+            "username": "to_account_locking",
+            "email": "to@account_locking.com",
+            "password": "test_password"
+            })
+    to_user.save()
+
+    to_account = AccountModel({
+            "user_id": to_user.id,
+            "balance": 0,
+            "account_number": "to_account_locking"
+            })
+    to_account.save()
 
     transaction_details = {
             "to_account_id": to_account.id,
             "from_account_id": from_account.id,
-            "amount": 20
+            "amount": 20,
             }
 
     path = '/api/v1/transactions/'

@@ -47,7 +47,6 @@ def test_get_user_failure(test_context):
 
     path = '/api/v1/users/1000'
     res = make_get_request(path, test_client, token)
-    res_json = res.get_json()
 
-    assert res.status_code == 404
-    assert res.get_json() == { 'error': 'User with id 1000 does not exist' }
+    assert res.status_code == 403
+    assert res.get_json() == { 'error': 'User with id {} does not have permission to view information about user with id 1000'.format(str(dummy_user.id)) }

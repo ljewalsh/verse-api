@@ -4,7 +4,7 @@ from marshmallow import fields, Schema
 from sqlalchemy import Index
 from . import db
 from .TransactionModel import TransactionSchema
-from ..shared.Exceptions import InsufficientFunds
+from ..shared.Exceptions import InsufficientFunds, InvalidPermissions
 
 class AccountModel(db.Model):
     __tablename__ = 'accounts'
@@ -40,8 +40,10 @@ class AccountModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def remove_money_from_account(id, amount):
+    def remove_money_from_account(id, user_id, amount):
         account = AccountModel.query.filter_by(id=id).with_for_update().one()
+        if (account.user_id != user_id):
+            raise InvalidPermissions('User with id {} does not have permission to remove money from account {}'.format(str(user_id), str(account.id)))
         if (account.balance < amount):
             raise InsufficientFunds('Account with id {} does not have enough money to complete this transaction'.format(str(id)))
 

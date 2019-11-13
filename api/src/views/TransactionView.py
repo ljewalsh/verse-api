@@ -4,14 +4,14 @@ from flask import request, json, Response, Blueprint
 from ..models.TransactionModel import TransactionModel, TransactionSchema
 from ..models.AccountModel import AccountModel, AccountSchema
 from ..shared.Authentication import Auth
-from ..shared.Exceptions import InsufficientFunds
+from ..shared.Exceptions import InsufficientFunds, InvalidPermissions
 
 transaction_api = Blueprint('transactions', __name__)
 transaction_schema = TransactionSchema()
 
 @transaction_api.route('/', methods=['POST'])
 @Auth.auth_required
-def create_transaction():
+def create_transaction(user_id):
     req_data = request.get_json()
     data = transaction_schema.load(req_data)
 
@@ -20,13 +20,15 @@ def create_transaction():
     amount = data.get('amount')
 
     try:
-        AccountModel.remove_money_from_account(from_account_id, amount)
+        AccountModel.remove_money_from_account(from_account_id, user_id, amount)
         AccountModel.add_money_to_account(to_account_id, amount)
 
     except sqlalchemy.orm.exc.NoResultFound:
         return custom_response({ 'error': 'Account with id {} does not exist'.format(str(from_account_id)) }, 403)
-    except InsufficientFunds:
-        return custom_response({ 'error': str(InsufficientFunds) }, 403)
+    except InsufficientFunds as error:
+        return custom_response({ 'error': str(error) }, 403)
+    except InvalidPermissions as error:
+        return custom_response({ 'error': str(error) }, 403)
 
     transaction = TransactionModel(data)
     transaction.save()
