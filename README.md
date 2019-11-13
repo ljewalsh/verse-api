@@ -21,7 +21,7 @@ JWT_SECRET_KEY=example
 ## Running Tests
 - Setup a local testing db called `verse-testing` with the user `verse_developer` and password `iamaversedeveloper`
 - Install pipenv (https://pypi.org/project/pipenv/)
-- From with api directory, run `pipenv install`
+- From within api directory, run `pipenv install`
 - Run `pipenv shell` to enter virtual environment
 - Run `JWT_SECRET_KEY=testing pytest` to test code
 
