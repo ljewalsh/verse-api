@@ -1,5 +1,5 @@
 from flask import Flask
-from .config import app_config
+from .config import DATABASE_CONNECTION_URI
 from .models import db, bcrypt
 from .models.UserModel import UserModel
 from .models.AccountModel import AccountModel
@@ -11,11 +11,13 @@ from .views.TransactionView import transaction_api as transaction_blueprint
 
 def create_app(env_name):
   app = Flask(__name__)
-
-  app.config.from_object(app_config[env_name])
+  app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_CONNECTION_URI
+  app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+  app.app_context().push()
 
   bcrypt.init_app(app)
   db.init_app(app)
+  db.create_all()
 
   app.register_blueprint(user_blueprint, url_prefix='/api/v1/users')
   app.register_blueprint(account_blueprint, url_prefix='/api/v1/accounts')
