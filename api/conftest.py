@@ -10,7 +10,6 @@ def test_context():
     Test Configuration
     '''
     app = create_app('testing')
-
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://verse_developer:iamaversedeveloper@localhost:5432/verse_testing'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.app_context().push()
@@ -23,7 +22,7 @@ def test_context():
         dummy_user = UserModel({
             'username': 'test_user',
             'email': 'test@email.com',
-            'password': 'test_password'
+            'password': 'testpassword'
         })
         dummy_user.save()
 

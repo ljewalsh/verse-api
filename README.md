@@ -21,7 +21,7 @@ JWT_SECRET_KEY=example
 - Install pipenv (https://pypi.org/project/pipenv/)
 - From with api directory, run `pipenv install`
 - Run `pipenv shell` to enter virtual environment
-- Run `pytest` to test code
+- Run `JWT_SECRET_KEY=testing pytest` to test code
 
 ## Authentication
 All requests (except user create and login requests) require a jwt-token in the header. The jwt-token is available in two responses:

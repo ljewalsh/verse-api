@@ -7,8 +7,8 @@ user_schema = UserSchema()
 
 @user_api.route('/', methods=['POST'])
 def create_user():
-  req_data = request.get_json()
-  data = user_schema.load(req_data)
+  data = request.get_json()
+  data = user_schema.load(data)
 
   user_in_db = UserModel.get_user_by_email(data.get('email'))
   if user_in_db:
@@ -26,7 +26,7 @@ def create_user():
 
 @user_api.route('/login', methods=['POST'])
 def login():
-  req_data = request.get_json()
+  data = request.get_json()
   email = data.get('email')
   password = data.get('password')
 

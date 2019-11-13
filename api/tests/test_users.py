@@ -18,6 +18,18 @@ def test_create_user(test_context):
     assert created_user is not None
     assert res.status_code == 201
 
+def test_login_user(test_context):
+    test_client, dummy_user, token = test_context
+
+    path = '/api/v1/users/login'
+    data = {
+            'email': dummy_user.email,
+            'password': 'testpassword'
+            }
+
+    res = make_post_request(path, test_client, data, token)
+    assert res.status_code == 200
+
 def test_get_user_success(test_context):
     test_client, dummy_user, token = test_context
 
