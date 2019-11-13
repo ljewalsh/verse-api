@@ -5,11 +5,11 @@ Api docs can be found here: https://documenter.getpostman.com/view/7103969/SW7Ua
 
 ## Quick Start
 - Download or clone repo
-- Add environment variables to .env file at root of project (POSTGRES_HOST must be set to postgres):
+- Add environment variables to .env file at root of project (POSTGRES_HOST must be set to db):
 ```
 POSTGRES_USER=test
 POSTGRES_PASSWORD=password
-POSTGRES_HOST=postgres
+POSTGRES_HOST=db
 POSTGRES_PORT=5432
 POSTGRES_DB=example
 JWT_SECRET_KEY=example
