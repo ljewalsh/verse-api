@@ -41,7 +41,6 @@ def test_get_user_success(test_context):
     assert res_json['id'] == dummy_user.id
     assert res_json['email'] == dummy_user.email
     assert res_json['username'] == dummy_user.username
-    assert res_json['password'] == dummy_user.password
 
 def test_get_user_failure(test_context):
     test_client, dummy_user, token = test_context

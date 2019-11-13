@@ -52,6 +52,7 @@ def get_a_user(user_id):
         return custom_response({'error': 'User with id {} does not exist'.format(str(user_id)) }, 404)
 
     ser_data = user_schema.dump(user)
+    del ser_data[password]
     return custom_response(ser_data, 200)
 
 def custom_response(res, status_code):
