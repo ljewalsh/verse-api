@@ -1,6 +1,8 @@
 # Verse Api
 A basic api for the verse banking app built with postgres, Flask, and Flask-SQLAlchemy
 
+Api docs can be found here: https://documenter.getpostman.com/view/7103969/SW7UaqEm?version=latestl
+
 ## Quick Start
 - Download or clone repo
 - Add environment variables to .env file at root of project (POSTGRES_HOST must be set to postgres):
