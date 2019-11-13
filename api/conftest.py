@@ -10,6 +10,11 @@ def test_context():
     Test Configuration
     '''
     app = create_app('testing')
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://verse_developer:iamaversedeveloper@localhost:5432/verse_testing'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.app_context().push()
+
     test_client = app.test_client()
 
     with app.app_context():

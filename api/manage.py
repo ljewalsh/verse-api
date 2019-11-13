@@ -4,8 +4,7 @@ from flask_migrate import Migrate, MigrateCommand
 
 from src.app import create_app, db
 
-ENV_NAME = os.getenv('FLASK_ENV')
-app = create_app(ENV_NAME)
+app = create_app('verse_api')
 
 migrate = Migrate(app=app, db=db)
 

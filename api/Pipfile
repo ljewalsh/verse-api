@@ -4,8 +4,6 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-flask-script = "*"
-flask-migrate = "*"
 pytest-flask = "*"
 pytest = "*"
 pylint = "*"
@@ -19,6 +17,9 @@ psycopg2-binary = "*"
 sqlalchemy = "*"
 pytest = "*"
 pyjwt = "*"
+gunicorn = "*"
+flask-script = "*"
+flask-migrate = "*"
 
 [requires]
 python_version = "3.8"
